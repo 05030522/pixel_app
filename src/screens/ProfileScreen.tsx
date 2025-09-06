@@ -22,7 +22,8 @@ import auth from '@react-native-firebase/auth';
 
 import InputBox from '../components/InputBox';
 import CustomButton from '../components/CustomButton';
-import InterestSelector from '../components/InterestSelectorProps'; // 새로 만든 컴포넌트
+// [수정] 올바른 파일 경로로 수정했습니다.
+import InterestSelector from '../components/InterestSelector';
 
 // 관심사 데이터 구조
 const interestData = {
@@ -100,6 +101,7 @@ const ProfileScreen = () => {
     });
   };
 
+  // [수정] 모든 문제점을 해결한 최종 저장 로직입니다.
   const handleSaveProfile = async () => {
     if (!currentUser) return;
     if (nicknameError || bioError) {
@@ -107,15 +109,21 @@ const ProfileScreen = () => {
       return;
     }
     if (!nickname || !age) {
-      Alert.alert('필수 정보 누락', '닉네임, 나이, 프로필 사진은 필수입니다.');
+      Alert.alert('필수 정보 누락', '닉네임과 나이는 필수입니다.');
       return;
     }
 
     try {
-      let profileImageUrl = imageUri;
+      let profileImageUrl = '';
+
       if (imageUri && !imageUri.startsWith('http')) {
         const path = `profile_images/${currentUser.uid}.jpg`;
         profileImageUrl = await uploadImage(imageUri, path);
+      } else if (imageUri) {
+        profileImageUrl = imageUri;
+      } else {
+        profileImageUrl =
+          'https://placehold.co/120x120/A020F0/FFFFFF?text=Pixel';
       }
 
       await updateUserProfile(currentUser.uid, {
@@ -127,10 +135,11 @@ const ProfileScreen = () => {
       });
 
       Alert.alert('저장 완료', '프로필이 성공적으로 저장되었습니다.');
+
       if (isFromSignUp) {
         navigation.replace('Home');
       } else {
-        navigation.goBack();
+        navigation.replace('Home');
       }
     } catch (error) {
       console.error(error);
@@ -193,7 +202,7 @@ const ProfileScreen = () => {
     </SafeAreaView>
   );
 };
-// ... (스타일 코드는 기존과 유사하므로 생략)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
