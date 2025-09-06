@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "604372979802",
+    "project_id": "fixel-app",
+    "storage_bucket": "fixel-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604372979802:android:bb0810d9692abffdb10863",
+        "android_client_info": {
+          "package_name": "com.pixelappnew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6WWQjou8qstvmzBydv7GWZxWlCsVpGso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

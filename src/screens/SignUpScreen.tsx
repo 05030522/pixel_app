@@ -12,29 +12,35 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import InputBox from '../components/InputBox';
 import CustomButton from '../components/CustomButton';
-import { login } from '../services/firebase';
+import { signUp } from '../services/firebase';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
 /**
- * 이메일과 비밀번호로 로그인하는 화면입니다.
+ * 이메일과 비밀번호로 회원가입하는 화면입니다.
  */
-const LoginScreen = ({ navigation }: Props) => {
+const SignUpScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('오류', '비밀번호가 일치하지 않습니다.');
+      return;
+    }
     if (!email || !password) {
       Alert.alert('오류', '이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
     setLoading(true);
     try {
-      await login(email, password);
-      // 로그인 성공 시 AppNavigator의 onAuthStateChanged가 감지하여 Home으로 이동
+      await signUp(email, password);
+      // 회원가입 성공 시 AppNavigator가 감지하여 Home으로 이동합니다.
+      // 실제 앱에서는 프로필 생성 화면으로 이동시켜야 합니다.
     } catch (error: any) {
-      Alert.alert('로그인 실패', error.message);
+      Alert.alert('회원가입 실패', error.message);
     } finally {
       setLoading(false);
     }
@@ -46,7 +52,7 @@ const LoginScreen = ({ navigation }: Props) => {
       style={styles.container}
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>PixelApp</Text>
+        <Text style={styles.title}>회원가입</Text>
         <InputBox
           placeholder="이메일"
           value={email}
@@ -60,9 +66,19 @@ const LoginScreen = ({ navigation }: Props) => {
           onChangeText={setPassword}
           secureTextEntry
         />
-        <CustomButton title="로그인" onPress={handleLogin} loading={loading} />
-        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-          <Text style={styles.linkText}>계정이 없으신가요? 회원가입</Text>
+        <InputBox
+          placeholder="비밀번호 확인"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+        <CustomButton
+          title="회원가입"
+          onPress={handleSignUp}
+          loading={loading}
+        />
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.linkText}>이미 계정이 있으신가요? 로그인</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -92,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignUpScreen;
